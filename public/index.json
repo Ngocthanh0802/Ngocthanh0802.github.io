@@ -1,111 +1,111 @@
 [
 {
-	"uri": "//localhost:1313/",
+	"uri": "/",
 	"title": "Image Upload and Download with S3",
 	"tags": [],
 	"description": "",
 	"content": "Working with Amazon S3, Lambda, and API Gateway for Image Upload and Download Overview In this lab, you will learn the fundamental concepts and hands-on practice with Amazon S3, Lambda, and API Gateway to implement an image upload and download system. The lab demonstrates how to upload an image to an S3 bucket and retrieve it, using API Gateway and AWS Lambda, tested via Postman.\nLab Content Introduction Preparation Steps Create Lambda Function for Upload/Download Configure API Gateway for Integration Test the API using Postman Clean Up Resources "
 },
 {
-	"uri": "//localhost:1313/4-s3log/4.1-updateiamrole/",
+	"uri": "/4-s3log/4.1-updateiamrole/",
 	"title": "Configure API Gateway to Connect with Lambda",
 	"tags": [],
 	"description": "",
 	"content": " Configuration Select API from the left-hand navigation panel\nOn the API configuration page that we created, go to Resources\nProceed to Create Resource\nResource name: files\nFinally, click Create Resource You will be redirected back to the Resources interface and receive a success message\nSelect /files → Actions → Create Method → select POST → click the green check mark\nConfiguration:\nIntegration type: Lambda Function Use Lambda Proxy integration: ENABLED Lambda Region: us-east-1 Lambda Function: select uploadImageToS3 Click Create Method\nRepeat the same steps for the download function Deploy API\nFrom the Actions menu → select Deploy API\nCreate a new Stage: Stage name: dev Click Deploy After deployment, you will receive an endpoint URL\n"
 },
 {
-	"uri": "//localhost:1313/3-accessibilitytoinstances/3.1-public-instance/",
+	"uri": "/3-accessibilitytoinstances/3.1-public-instance/",
 	"title": "Configure Lambda",
 	"tags": [],
 	"description": "",
 	"content": "1. Access Lambda and Select the Function Open the Lambda service in the AWS Console From the left-hand menu, select Functions Search for the function you created, for example: UploadFunction Click the function name to view its overview and configuration\n2. Configure Lambda Here is where you can enter code using the Python language, as configured earlier:\nSample code for the Upload Function:\nimport json import boto3 import base64 s3 = boto3.client(\u0026#39;s3\u0026#39;) BUCKET_NAME = \u0026#39;ngocthanh0802\u0026#39; def lambda_handler(event, context): try: if \u0026#39;queryStringParameters\u0026#39; not in event or \u0026#39;fileName\u0026#39; not in event[\u0026#39;queryStringParameters\u0026#39;]: return { \u0026#39;statusCode\u0026#39;: 400, \u0026#39;body\u0026#39;: json.dumps({\u0026#39;error\u0026#39;: \u0026#39;Missing fileName in query parameters\u0026#39;}) } file_name = event[\u0026#39;queryStringParameters\u0026#39;][\u0026#39;fileName\u0026#39;] if \u0026#39;body\u0026#39; not in event: return { \u0026#39;statusCode\u0026#39;: 400, \u0026#39;body\u0026#39;: json.dumps({\u0026#39;error\u0026#39;: \u0026#39;Missing file content in body\u0026#39;}) } if event.get(\u0026#39;isBase64Encoded\u0026#39;, False): file_content = base64.b64decode(event[\u0026#39;body\u0026#39;]) else: file_content = event[\u0026#39;body\u0026#39;] if isinstance(event[\u0026#39;body\u0026#39;], bytes) else event[\u0026#39;body\u0026#39;].encode(\u0026#39;utf-8\u0026#39;) content_type = \u0026#39;application/octet-stream\u0026#39; if file_name.lower().endswith((\u0026#39;.jpg\u0026#39;, \u0026#39;.jpeg\u0026#39;)): content_type = \u0026#39;image/jpeg\u0026#39; elif file_name.lower().endswith(\u0026#39;.png\u0026#39;): content_type = \u0026#39;image/png\u0026#39; elif file_name.lower().endswith(\u0026#39;.gif\u0026#39;): content_type = \u0026#39;image/gif\u0026#39; elif file_name.lower().endswith(\u0026#39;.txt\u0026#39;): content_type = \u0026#39;text/plain\u0026#39; s3.put_object( Bucket=BUCKET_NAME, Key=file_name, Body=file_content, ContentType=content_type ) return { \u0026#39;statusCode\u0026#39;: 200, \u0026#39;body\u0026#39;: json.dumps({\u0026#39;message\u0026#39;: f\u0026#39;File {file_name} uploaded successfully!\u0026#39;}), \u0026#39;headers\u0026#39;: { \u0026#39;Content-Type\u0026#39;: \u0026#39;application/json\u0026#39; } } except Exception as e: return { \u0026#39;statusCode\u0026#39;: 500, \u0026#39;body\u0026#39;: json.dumps({\u0026#39;error\u0026#39;: f\u0026#39;Error uploading file: {str(e)}\u0026#39;}), \u0026#39;headers\u0026#39;: { \u0026#39;Content-Type\u0026#39;: \u0026#39;application/json\u0026#39; } } "
 },
 {
-	"uri": "//localhost:1313/2-prerequiste/2.1-createec2/2.1.1-createvpc/",
+	"uri": "/2-prerequiste/2.1-createec2/2.1.1-createvpc/",
 	"title": "Create S3 Bucket",
 	"tags": [],
 	"description": "",
 	"content": "Initialize an S3 Bucket for storing images and results Access the AWS Console and search for the Amazon S3 service:\nVisit the AWS Management Console\nLog in with your AWS account\nAfter a successful login, you will be redirected to the AWS Management Console homepage: Search for S3 in the search bar and select the S3 service\nClick Create bucket and follow the setup instructions\nS3 Configuration:\nIn the General configuration section:\nAWS Region: Select your preferred region Bucket type: Choose General purpose Bucket name: my-file-sharing-bucket-amc0802 In the Object Ownership section:\nChoose ACLs disabled (recommended)\nIn the Block Public Access settings for this bucket section:\nUncheck Block all public access Check I acknowledge that the current settings might result in this bucket and the objects within becoming public.\n"
 },
 {
-	"uri": "//localhost:1313/1-introduce/",
+	"uri": "/1-introduce/",
 	"title": "Introduction",
 	"tags": [],
 	"description": "",
 	"content": "🔐 AWS Identity and Access Management (IAM)\nWith AWS Identity and Access Management (IAM), you can define who has access, what services and AWS resources they can access, and under what conditions. IAM is a feature offered for free with your AWS account.\n🔹 Amazon S3 – Flexible Object Storage Service\nAmazon S3 (Simple Storage Service) is a powerful object storage service on the AWS platform that allows you to store and retrieve any type of data — from images, videos, and text files to large-scale datasets.\nData in S3 is organized into units called \u0026ldquo;buckets\u0026rdquo;, which are easily accessible via URLs or APIs.\nS3 provides virtually unlimited storage with a durability of up to 99.999999999% (11 nines), making it suitable for both long-term storage and high-reliability applications. Additionally, it integrates well with other AWS services like Lambda, CloudFront, and API Gateway — forming a complete solution for serverless or content distribution systems.\nKey benefits of S3:\nStore millions to billions of objects without worrying about size limits Extremely high data durability Every file is accessible via a unique path (URL) Fine-grained access control via IAM, bucket policies, or ACLs Easy integration with other AWS services such as Lambda, Athena, API Gateway, etc. 🔹 Amazon API Gateway – The Bridge Between Users and Backend\nAPI Gateway is a managed API service provided by AWS that allows you to build, deploy, and manage RESTful or HTTP APIs at scale.\nThis service acts as an intermediary between clients (e.g., web browsers, mobile apps) and the backend (e.g., Lambda, EC2, or other internal services).\nAPI Gateway supports API versioning, rate limiting, user authentication, detailed logging, and secure access control — enabling you to deploy secure, stable, and scalable APIs.\n🔹 AWS Lambda – Run Code Without Servers\nAWS Lambda is a serverless compute service that lets you run code without provisioning or managing servers.\nLambda is triggered by events such as requests from API Gateway, a file upload to S3, or a scheduled cron job. When an event occurs, Lambda automatically executes the predefined code.\nLambda supports popular programming languages like Node.js, Python, Java, Go, etc., and is ideal for handling short tasks, automation, or serving as a backend for modern web/mobile applications.\n🔹 Summary\nCombining Amazon S3, API Gateway, and AWS Lambda forms a flexible serverless architecture that helps you:\nEfficiently store and serve data (S3) Build APIs for accessing or processing data (API Gateway) Handle backend logic without managing infrastructure (Lambda) This is an optimal solution for modern systems like photo-sharing apps, cloud storage platforms, or backend services for mobile/web applications. Thanks to its auto-scaling capability and deep integration within the AWS ecosystem, you can deploy quickly, securely, and cost-effectively.\n"
 },
 {
-	"uri": "//localhost:1313/2-prerequiste/2.1-createec2/",
+	"uri": "/2-prerequiste/2.1-createec2/",
 	"title": "Preparation",
 	"tags": [],
 	"description": "",
 	"content": "Getting Started Before diving in, it\u0026rsquo;s helpful to understand how to create and use core AWS services such as S3, Lambda, and API Gateway. You can refer to the following lab tutorials:\nIntroduction to Amazon S3 Working with AWS Lambda Working with API Gateway In the following content, we’ll practice implementing an image upload feature to Amazon S3 using AWS Lambda and API Gateway — a practical example for serverless data storage systems.\nMain Sections Create an S3 Bucket Create a Lambda Function Create a REST API in API Gateway "
 },
 {
-	"uri": "//localhost:1313/2-prerequiste/2.1-createec2/2.1.2-createpublicsubnet/",
+	"uri": "/2-prerequiste/2.1-createec2/2.1.2-createpublicsubnet/",
 	"title": "Create Lambda UploadFunction",
 	"tags": [],
 	"description": "",
 	"content": " In the search bar, type Lambda and select the Lambda service\nAfter accessing the service, click Create function\nOn the Create function screen:\nFunction name: UploadFunction Runtime: Select Python 3.9 Leave the remaining settings as default Then click Create Function\nAfter clicking the Create button, a message will appear confirming that the function was successfully created.\n"
 },
 {
-	"uri": "//localhost:1313/3-accessibilitytoinstances/3.2-private-instance/",
+	"uri": "/3-accessibilitytoinstances/3.2-private-instance/",
 	"title": "Granting Permissions to Lambda (in IAM Console)",
 	"tags": [],
 	"description": "",
 	"content": "Method 1: Grant Full S3 Access (Quick \u0026amp; Easy) In the IAM interface, on the left sidebar, select Roles.\nYou will see a Role with the same name as the Lambda function you just created.\nClick on that Role.\nThe result will look like this:\nOnce you’ve entered the Role\u0026rsquo;s detail page:\nIn the Permissions policies section: Click Add permissions, then choose Attach policies. You will see the full list of Permission Policies.\nIn the search bar, type AmazonS3FullAccess Select that policy and then click Add permission "
 },
 {
-	"uri": "//localhost:1313/2-prerequiste/",
+	"uri": "/2-prerequiste/",
 	"title": "Preparation Steps",
 	"tags": [],
 	"description": "",
 	"content": "\rYou need to create one Linux instance in the public subnet and one Windows instance in the private subnet to perform this lab.\nTo learn how to create EC2 instances and a VPC with public/private subnets, you can refer to the following labs:\nIntroduction to Amazon EC2 Working with Amazon VPC To use AWS Systems Manager to manage the Windows instance specifically, and instances in general on AWS, you need to grant the necessary permissions for the instances to work with Systems Manager.\nIn this preparation section, we will also create an IAM Role to allow our instances to interact with Systems Manager.\nContent Prepare VPC and EC2 Instances Create IAM Role "
 },
 {
-	"uri": "//localhost:1313/3-accessibilitytoinstances/",
+	"uri": "/3-accessibilitytoinstances/",
 	"title": "Configure Lambda",
 	"tags": [],
 	"description": "",
 	"content": "Configure S3 Access Permissions for Lambda In this step, we will configure the Lambda Function and grant it access to Amazon S3 so that Lambda can perform operations on data stored in S3 (such as uploading, downloading, or deleting files).\nProperly setting up permissions is essential to ensure that Lambda functions operate reliably, securely, and as intended when interacting with an S3 bucket.\nConfigure Lambda Grant Permissions to Lambda "
 },
 {
-	"uri": "//localhost:1313/2-prerequiste/2.1-createec2/2.1.3-createprivatesubnet/",
+	"uri": "/2-prerequiste/2.1-createec2/2.1.3-createprivatesubnet/",
 	"title": "Create Lambda Download Function",
 	"tags": [],
 	"description": "",
 	"content": " After accessing the service, click Create function\nOn the Create function screen:\nFunction name: DownloadFunction Runtime: Select Python 3.9 Leave the remaining settings as default Then click Create Function\nAfter clicking the Create button, a message will appear confirming that the function was successfully created.\n"
 },
 {
-	"uri": "//localhost:1313/4-s3log/",
+	"uri": "/4-s3log/",
 	"title": "API Gateway Configuration",
 	"tags": [],
 	"description": "",
 	"content": "🔹 What is API Gateway? Amazon API Gateway is a service that helps you create, manage, and secure APIs that connect clients (frontend) with backends like Lambda, EC2, or other AWS services.\n🔹 Purpose Acts as a gateway between users and backend systems. Handles HTTP/RESTful requests efficiently. Supports features such as: Authentication Rate limiting Logging Monitoring 🔹 Example Scenario Create an API endpoint: POST /upload-image API Gateway receives the request from the frontend (client). Forwards the request to a Lambda function. Lambda processes the image upload to S3. The result is returned to the client via API Gateway. 🔹 Commonly Used Related Services AWS Service Main Purpose Lambda Handles backend logic Amazon S3 Stores files (images, data, etc.) IAM Manages API access permissions CloudWatch Logs and monitors API activities Cognito Handles user authentication ✅ Summary API Gateway enables fast, manageable, and easily integrated API development with AWS services — a key component in a serverless architecture.\n"
 },
 {
-	"uri": "//localhost:1313/5-portfwd/",
+	"uri": "/5-portfwd/",
 	"title": "Deploy on Postman",
 	"tags": [],
 	"description": "",
 	"content": "Test API on Postman Upload an image via Postman Let’s proceed with Postman:\nMethod: POST URL: The API you just created Header: \u0026quot;Content-Type: application/json\u0026quot; Body: The URL of the POST API:\nThen click Send and the result will be displayed below: Check the result on S3 After Postman indicates the upload was successful, go to the S3 console to check if the image was uploaded. As shown in the image, the upload was successful: Congratulations, you have successfully uploaded an image to S3. Download an image using Postman Let’s proceed again in Postman:\nMethod: GET URL: The API you just created Header: \u0026quot;Content-Type: text/plain\u0026quot; Body: The URL of the GET API: Then click Send and the result will be displayed below: Congratulations, you have successfully downloaded an image from S3. "
 },
 {
-	"uri": "//localhost:1313/6-cleanup/",
+	"uri": "/6-cleanup/",
 	"title": "Cleaning Up Resources",
 	"tags": [],
 	"description": "",
 	"content": " Access the S3 Management Console Click on the S3 bucket you created for the practice. Click Empty. Type permanently delete, then click Empty to delete all objects in the bucket. Click Exit. After deleting all objects, click Delete to remove the bucket. Delete Lambda Function\nIn the AWS Console: Go to AWS Lambda. Select Functions → Choose the function you want to delete. Click Actions → Delete function. Confirm the deletion. Delete IAM Role In IAM: Go to IAM → Select Roles Find the role associated with your Lambda function Make sure it’s not being used elsewhere. Click Delete. Delete API Gateway (REST API or HTTP API) Step 1: Access API Gateway\nIn the AWS Console, find and select the API Gateway service. Step 2: Select the API type\nClick on the APIs tab. Select the API you want to delete (e.g., upload-api, MyRestAPI, etc.) Step 3: Delete the API\nClick on the API name to open its details. Click Actions → Select Delete. Confirm the deletion → The API will be completely removed from the system. "
 },
 {
-	"uri": "//localhost:1313/categories/",
+	"uri": "/categories/",
 	"title": "Categories",
 	"tags": [],
 	"description": "",
 	"content": ""
 },
 {
-	"uri": "//localhost:1313/tags/",
+	"uri": "/tags/",
 	"title": "Tags",
 	"tags": [],
 	"description": "",
